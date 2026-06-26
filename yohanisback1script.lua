@@ -15,7 +15,6 @@ local promptPart = Workspace.Map.Sistemas.Jobs.Caixas.PromptPart
 _G.ProxLoopAtivo = false
 _G.PulandoAtivo = false
 
--- NOCLIP
 local NoclipAtivo = false
 local noclipConnection
 
@@ -51,15 +50,11 @@ local function desativarNoclip()
     resetarNoclip()
 end
 
---========================
--- GUI PRINCIPAL
---========================
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "CyberNodry_GUI"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = CoreGui
 
--- FRAME NOCLIP
 local NoclipFrame = Instance.new("Frame")
 NoclipFrame.Size = UDim2.new(0, 220, 0, 140)
 NoclipFrame.Position = UDim2.new(0.5, -110, 0.5, -70)
@@ -73,7 +68,7 @@ Instance.new("UICorner", NoclipFrame)
 local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(1, 0, 0, 30)
 Title.BackgroundTransparency = 1
-Title.Text = "CyberNodry - Noclip"
+Title.Text = "CyberNodry - Ancolide"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 14
@@ -83,7 +78,7 @@ local Credit = Instance.new("TextLabel")
 Credit.Size = UDim2.new(1, 0, 0, 20)
 Credit.Position = UDim2.new(0, 0, 1, -20)
 Credit.BackgroundTransparency = 1
-Credit.Text = "by CyberNodry"
+Credit.Text = "Ative o auto job e o ancolide o butão"
 Credit.TextColor3 = Color3.fromRGB(150, 150, 150)
 Credit.Font = Enum.Font.Gotham
 Credit.TextSize = 12
@@ -118,10 +113,9 @@ CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 CloseBtn.Parent = NoclipFrame
 Instance.new("UICorner", CloseBtn)
 
--- FRAME JOB (logo abaixo do noclip)
 local JobFrame = Instance.new("Frame")
 JobFrame.Size = UDim2.new(0, 220, 0, 55)
-JobFrame.Position = UDim2.new(0.5, -110, 0.5, 85) -- abaixo do NoclipFrame
+JobFrame.Position = UDim2.new(0.5, -110, 0.5, 85)
 JobFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 JobFrame.BorderSizePixel = 0
 JobFrame.Active = true
@@ -141,9 +135,6 @@ JobBtn.BorderSizePixel = 0
 JobBtn.Parent = JobFrame
 Instance.new("UICorner", JobBtn).CornerRadius = UDim.new(0, 7)
 
---========================
--- BOTÕES NOCLIP
---========================
 NoclipBtn.MouseButton1Click:Connect(function()
     NoclipAtivo = not NoclipAtivo
     if NoclipAtivo then
@@ -171,15 +162,11 @@ CloseBtn.MouseButton1Click:Connect(function()
     ScreenGui:Destroy()
 end)
 
---========================
--- BOTÃO JOB
---========================
 JobBtn.MouseButton1Click:Connect(function()
     _G.ProxLoopAtivo = not _G.ProxLoopAtivo
     if _G.ProxLoopAtivo then
         JobBtn.BackgroundColor3 = Color3.fromRGB(220, 53, 69)
         JobBtn.Text = "■  Parar Job"
-        -- Ativa noclip junto automaticamente
         if not NoclipAtivo then
             NoclipAtivo = true
             NoclipBtn.Text = "ATIVADO"
@@ -193,9 +180,6 @@ JobBtn.MouseButton1Click:Connect(function()
     end
 end)
 
---========================
--- LOOP DE PULO
---========================
 task.spawn(function()
     while true do
         task.wait(0.35)
@@ -207,9 +191,6 @@ task.spawn(function()
     end
 end)
 
---========================
--- ANDAR ATÉ O DESTINO
---========================
 local function andarAte(destino)
     local destinoPos = destino.Position
     local path = PathfindingService:CreatePath({
@@ -250,9 +231,6 @@ local function andarAte(destino)
     task.wait(0.3)
 end
 
---========================
--- ACHAR PROMPT PERTO
---========================
 local function getPromptPerto()
     local melhor = nil
     local menorDist = 20
@@ -271,9 +249,6 @@ local function getPromptPerto()
     return melhor
 end
 
---========================
--- SEGURAR PROMPT
---========================
 local function holdPrompt(prompt)
     local dur = (prompt.HoldDuration or 2) + 0.6
 
@@ -296,9 +271,6 @@ local function holdPrompt(prompt)
     return false
 end
 
---========================
--- LOOP PRINCIPAL
---========================
 task.spawn(function()
     while true do
         task.wait(0.3)
@@ -309,14 +281,12 @@ task.spawn(function()
         humanoid = character:WaitForChild("Humanoid")
         rootPart = character:WaitForChild("HumanoidRootPart")
 
-        -- PASSO 1: Andar até PromptPart
         _G.PulandoAtivo = false
         print("[Loop] Andando para PromptPart...")
         andarAte(promptPart)
 
         if not _G.ProxLoopAtivo then continue end
 
-        -- PASSO 2: Segurar ProximityPrompt
         local prompt = getPromptPerto()
         if not prompt then
             warn("[Loop] Prompt não encontrada, aguardando...")
@@ -334,12 +304,10 @@ task.spawn(function()
 
         if not _G.ProxLoopAtivo then continue end
 
-        -- PASSO 3: Pula e anda para AreaEntrega
         print("[Loop] Pulando e indo para AreaEntrega...")
         _G.PulandoAtivo = true
         andarAte(areaEntrega)
 
-        -- PASSO 4: Para de pular
         _G.PulandoAtivo = false
         print("[Loop] Chegou! Parando pulo...")
         task.wait(1)
